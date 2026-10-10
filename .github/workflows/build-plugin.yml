@@ -1,7 +1,9 @@
 name: Build plugin
 
-# 只认手动开工单，推代码不会自动把云端灶台点着。
+# 推送到 main 自动编译，也保留手动触发。
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
