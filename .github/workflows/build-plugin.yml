@@ -93,6 +93,13 @@ jobs:
               "$GO_IMAGE" sh -c "chown -R $(id -u):$(id -g) /out /gocache"
           fi
 
+      - name: Verify native plugin entry points
+        run: |
+          nm -D --defined-only "build/linux/$GOARCH/codex-turn-state-cloud-mint.so" > /tmp/plugin-symbols.txt
+          for symbol in cliproxy_plugin_init cliproxyPluginCall cliproxyPluginFree cliproxyPluginShutdown; do
+            awk -v symbol="$symbol" '$NF == symbol { found = 1 } END { exit !found }' /tmp/plugin-symbols.txt
+          done
+
       - name: Generate and verify checksum
         working-directory: build/linux/${{ matrix.arch }}
         run: |
